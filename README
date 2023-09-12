@@ -1,0 +1,124 @@
+Arkanoid Game
+
+=============================
+=      File description     =
+=============================
+BrickerGameManager.java - contains the game initialization and the main method of the program.
+game_objects package:
+Ball.java - implements the Ball object class.
+BallCollisionCount.java - implements the BallCollisionCount class.
+BotPaddle.java - implements the BotPaddle object class.
+Brick.java - implements the Brick object class.
+GraphicLifeCounter.java - implements the GraphicLifeCounter class.
+Heart.java - implements the Heart object class.
+NumericLifeCounter.java - implements the NumericLifeCounter class.
+Paddle.java - implements the Paddle class.
+Puck.java - implements the Puck class.
+brick_strategies package:
+
+BasicCollisionStrategy.java - implements the BasicCollisionStrategy class.
+ChangeCameraStrategy.java - implements the ChangeCameraStrategyclass.
+CollisionStrategy.java - implements the CollisionStrategy interface.
+ExtraBallsStrategy.java - implements the ExtraBallsStrategy class.
+ExtraPaddleStrategy.java - implements the ExtraPaddleStrategy class.
+ReturnLifeStrategy.java - implements the ReturnLifeStrategy class.
+StrategyDecorator.java - implements the StrategyDecorator abstract class (Decorator).
+StrategyFactory.java - implements the StrategyFactory class 
+which is a factory class for strategies in the game.
+
+=============================
+=          Design           =
+=============================
+I used the Strategy design patter for the brick's strategies. In order to do that, I made
+the CollisionStrategy an interface, since it describes a behavior, an ability that something 
+(say, the brick) can have - and not an entity.
+Then, I decided to have 2 classes that implemets the interface- one for the basic strategy
+of colliding with a brick (BasicCollisionStrategy) and the other one is a Decorator for 
+strategies, and all the extra strategies (ChangeCameraStrategy, CollisionStrategy, ExtraBallsStrategy, 
+ExtraPaddleStrategy, ReturnLifeStrategy) inherit from it. I choose to use inheritance since all the 
+extra strategies are strategy decorators and the decorator is an abstract class because its not an
+actual object.
+I choose the Decorator pattern beacuse all the extra strategies must *have* the 
+basic one's functionality and they are not a basic strategy- so it is better if every extra strategy
+would hold a field of another one, and it gave me the possibility to build as much strategies as I 
+wanted one on top of the other - meaning a brick can have as many behaviors as we want.
+Since every brick must have a strategy, I thought a factory of strategies is necessary- it allows 
+adding strategies easily and without changing any other classes, it was also convenient during the 
+coding proccess.
+
+I choose Puck to inherit from Ball, since a puck is a ball- it has the same behavior, only with
+different appearances - but the appearances are not set inside the class so it doesnt matter to the
+design.
+I choose the BotPaddle to inherit from Paddle for the same reasons. 
+All other classes in the game_objects package inherit from GameObject, as they are a game object.
+
+
+
+=============================
+=  Implementation details   =
+=============================
+
+
+Here I would like to explain the StrategyFactory implementaion and how it creates a brick with 
+double strategy. The function getStrategy in the factory receives a base strategy as input - 
+I needed that in order to create the strategies recursively. From the game manager, this 
+functions gets the BasicStrategy which ensures that all the bricks,will disappear when colliding
+with a ball and the bricks counter will be updated.
+If DOUBLE was the option chosen randomly, we will update the double counter and go to the helper 
+function in order to have 2 random selections- by calling to getStrategy first with the same basic 
+strategy (since we didnt choose the first strategy yet, we only know that there are going to be 2 
+of them), and the second one will be built on the one that came back from the call- by sending it to 
+"getStrategy" as basic strategy. In case of second double, the same will happen but beacuse of the 
+counter it would be the last one.
+
+Note: in the ExtraBalls strategy I only added one puck beacuse otherwise the game ends to quickly.
+I kept on comments the option to add all 3 pucks so you can see how I would do that.
+
+
+=============================
+=    Answers to questions   =
+=============================
+1+2 The classes, patterns and reasoning for them are specified in the Design part of this README. 
+3. In order to limit the double behavior to 3 behaviors, i used a counter for the doubles. if 
+1 or none doubles ware counted, the double strategy can still be drawn. Otherwise, the double is
+not one of the options for the function, hence the double can only have one double recursive behavior,
+so as double whos both chosen behaviors are double.
+4. In order to allwo a brick to hold more than one behavior, I chose the extra Strategies to be a decorator
+for strategy that contains a strategy object (of interface CollisionStrategy) as a field . 
+That way, the strategy given to the decorator can be the basic strategy, an extra strategy that 
+has basic strategy or an extra strategy that has an extra strategy basic strategy etc. so a brick
+can have as many strategies as we want, built recursively.
+
+
+
+
+=============================
+=       API extensions      =
+=============================
+I made the CollisionStrategy an interface, added the classes BasicCollisionStrategy and StrategyDecorator 
+(explenations are in the Design part of this README). I also added a class for every new object in the
+game - BotPaddle, Heart, Puck, and a class for every strategy -ChangeCameraStrategy, CollisionStrategy, 
+ExtraBallsStrategy, ExtraPaddleStrategy, ReturnLifeStrategy -  all those were needed to implement the game.
+On top of that, I added the class BallCollisionCount:
+It has a constructor, and it overrides the update function.
+I needed this class in order to connect between the ChangeCamera strategy and the ball without changing 
+the code deeply- only adding a counter to the ball's class and a getter to it.
+Now if we ever want to change the conditions of num of collisions for the camera, 
+it is very easy to do.
+
+
+
+
+========================================
+=  Added Functions to existing classes =
+========================================
+
+Ball:
+
+public int getCollisionCount() ---
+this function is needed in order to count the num of collisions.
+It is used in the BallCollisionCount class.
+
+
+
+
