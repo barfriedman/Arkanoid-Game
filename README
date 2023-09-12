@@ -1,5 +1,7 @@
 Arkanoid Game
 This game was created as part of the course - Introduction to Object Oriented Programming, by the Hebrew University of Jerusalem. 
+The Purpose of the game is gaining as many points as possible, by hitting the bricks with the ball. Dropping the ball will cost you 1 life- you only have 3.
+There are surprises within the bricks - you can gain more lives, get another paddle and more.
 
 =============================
 =      File description     =
